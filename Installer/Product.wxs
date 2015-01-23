@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?define AppHelpLink="http://damn.technology" ?>
+<?define Version="1.4.0.0" ?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="Cisco Device Info" Language="1033" Version="$(var.Version)" Manufacturer="Dave Hope" UpgradeCode="50e7cb81-2f5d-4d11-aaf8-afb64ceed746">
+	<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+	<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+	<Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+	<Property Id="ARPHELPLINK" Value="$(var.AppHelpLink)"/>
+	<Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER"/>
+	<PropertyRef Id="NETFRAMEWORK40FULL" />
+
+    <!--
+	.Net 4 version check.
+	-->
+	<Condition Message="This application requires .NET Framework 4.0. Please install the .NET Framework then run this installer again.">
+	  <![CDATA[Installed OR NETFRAMEWORK40FULL]]>
+	</Condition>
+
+	<!--	<WixVariable Id="WixUIBannerBmp" Value="BannerBitmap.jpg" /> -->
+	<WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+	<UIRef Id="WixUI_InstallDir" />
+	
+	<Feature Id="ProductFeature" Title="Cisco Device Info" Level="1">
+	  <ComponentGroupRef Id="ProductComponents" />
+	</Feature>
+  </Product>
+  
+  <Fragment>
+	<Directory Id="TARGETDIR" Name="SourceDir">
+	  <Directory Id="ProgramFilesFolder">
+		  <Directory Id="INSTALLFOLDER" Name="Cisco Device Info" />
+	  </Directory>
+
+	  <Directory Id="ProgramMenuFolder" />
+	</Directory>
+  </Fragment>
+
+  <Fragment>
+	<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+	  <Component Id="ProductComponentExe">
+		  <File Id="CiscoDeviceInfoExe" Name="CiscoDeviceInfo.exe" Source="..\CiscoDeviceInfo\bin\Release\CiscoDeviceInfo.exe" KeyPath="yes">
+		    <Shortcut Advertise="no" Id="StartMenuShortcut" Directory="ProgramMenuFolder" Name="Cisco Device Info" WorkingDirectory="INSTALLFOLDER" />
+		  </File>
+	  </Component>
+	  <Component Id="SharpLib"><File Name="SharpSnmpLib.dll" Source="..\CiscoDeviceinfo\lib\SharpSnmpLib.dll" /> </Component>
+	  <Component Id="SharpLibOptional"><File Name="SharpSnmpLib.Optional.dll" Source="..\CiscoDeviceInfo\lib\SharpSnmpLib.Optional.dll" /> </Component>
+	</ComponentGroup>
+  </Fragment>
+</Wix>
